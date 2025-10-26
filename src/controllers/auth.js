@@ -43,8 +43,8 @@ export const loginUserController = async (req, res) =>{
 export const logoutController = async (req, res) =>{
 
 
-    if(req.cookies.sessionId){
-        await logout(req.cookies.sessionId);
+    if(req.cookies.refreshToken){
+        await logout(req.cookies.refreshToken);
     }
 
     res.status(204).send();

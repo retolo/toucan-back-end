@@ -55,7 +55,7 @@ export const loginUser = async (payload) =>{
 
 
 export const logout = async (sessionId) =>{
-    await SessionCollection.deleteOne({_id: sessionId});
+    await SessionCollection.deleteOne({refreshToken: sessionId});
 }
 
 
