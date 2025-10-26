@@ -58,3 +58,19 @@ export const logout = async (sessionId) =>{
     await SessionCollection.deleteOne({_id: sessionId});
 }
 
+
+export const checkSession = async (refreshToken) =>{
+    const session = await SessionCollection.findOne({refreshToken: refreshToken});
+
+    if(!session){
+        throw createHttpError(401, 'Unauthorized')
+    }
+
+
+    return{
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+        accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+        refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
+    }
+}
