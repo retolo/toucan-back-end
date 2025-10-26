@@ -52,7 +52,7 @@ export const logoutController = async (req, res) =>{
 
 
 export const checkSessionController = async (req, res) =>{
-    const session = await checkSession(req.body.refreshToken);
+    const session = await checkSession(req.cookies.refreshToken);
 
     res.json({
         status: 200,
