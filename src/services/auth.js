@@ -54,12 +54,14 @@ export const loginUser = async (payload) =>{
 }
 
 
-export const logout = async (sessionId) =>{
-    await SessionCollection.deleteOne({refreshToken: sessionId});
+export const logout = async (refreshToken) =>{
+    console.log(refreshToken)
+    await SessionCollection.deleteOne({refreshToken: refreshToken});
 }
 
 
 export const checkSession = async (refreshToken) =>{
+
     const session = await SessionCollection.findOne({refreshToken: refreshToken});
 
     if(!session){
