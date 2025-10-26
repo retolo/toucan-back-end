@@ -45,7 +45,7 @@ export const loginUser = async (payload) =>{
     await SessionCollection.deleteOne({userId: user._id});
 
     return await SessionCollection.create({
-        sessionId: user._id,
+        userId: user._id,
         accessToken: accessToken,
         refreshToken: refreshToken,
         accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
