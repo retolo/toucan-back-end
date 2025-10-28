@@ -4,7 +4,7 @@ import {SessionCollection} from '../db/models/session.js'
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { THIRTY_DAYS, FIFTEEN_MINUTES} from "../constants/index.js";
-import { validateCode, getFullname } from '../utils/googleOAuth2.js';
+import { validateCode } from '../utils/googleOAuth2.js';
 export const registerUser = async (payload) =>{
     const user = await UserCollection.findOne({email: payload.email});
 
@@ -91,10 +91,9 @@ export const loginWithGoogle = async (code) =>{
     let user = await UserCollection.findOne({email: payload.email});
 
     if(!user){
-        const encryptedPassword = await bcrypt.hash(randomBytes(10).toString('hex'), 10)
+        const encryptedPassword = await bcrypt.hash(randomBytes(10).toString('hex'), 10);
         user = await UserCollection.create({
             email: payload.email,
-            name: getFullname(payload),
             password: encryptedPassword
         })
 
