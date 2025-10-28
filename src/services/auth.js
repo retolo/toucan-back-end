@@ -4,7 +4,7 @@ import {SessionCollection} from '../db/models/session.js'
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { THIRTY_DAYS, FIFTEEN_MINUTES} from "../constants/index.js";
-
+import { validateCode, getFullname } from '../utils/googleOAuth2.js';
 export const registerUser = async (payload) =>{
     const user = await UserCollection.findOne({email: payload.email});
 
@@ -75,4 +75,38 @@ export const checkSession = async (refreshToken) =>{
         accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
         refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
     }
+}
+
+
+
+export const loginWithGoogle = async (code) =>{
+    const loginTicket = await validateCode(code)
+    const payload = loginTicket.getPayload();
+
+    if(!payload){
+        throw createHttpError(401)
+    }
+
+
+    let user = await UserCollection.findOne({email: payload.email});
+
+    if(!user){
+        const encryptedPassword = await bcrypt.hash(randomBytes(10).toString('hex'), 10)
+        user = await UserCollection.create({
+            email: payload.email,
+            name: getFullname(payload),
+            password: encryptedPassword
+        })
+
+    }
+        const accessToken = randomBytes(30).toString('base64');
+        const refreshToken = randomBytes(30).toString('base64');
+
+    return await SessionCollection.create({
+        userId: user._id,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+        refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
+    })
 }

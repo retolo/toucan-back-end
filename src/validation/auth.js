@@ -12,6 +12,6 @@ export const loginSchema = Joi.object({
 })
 
 
-export const checkSessionSchema = Joi.object({
-    refreshToken: Joi.string().required(),
+export const loginWithGoogleSchema = Joi.object({
+    code: Joi.string().required(),
 })

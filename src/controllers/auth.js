@@ -1,6 +1,6 @@
-import { registerUser, loginUser, logout, checkSession} from "../services/auth.js";
+import { registerUser, loginUser, logout, checkSession, loginWithGoogle} from "../services/auth.js";
 import { THIRTY_DAYS } from "../constants/index.js";
-
+import { generateAuthUrl } from "../utils/googleOAuth2.js";
 
 export const registerUserController = async (req, res) =>{
     const user = await registerUser(req.body);
@@ -42,7 +42,6 @@ export const loginUserController = async (req, res) =>{
 
 export const logoutController = async (req, res) =>{
 
-    // console.log(req.cookies)
     if(req.cookies.refreshToken){
         await logout(req.cookies.refreshToken);
     }
@@ -59,6 +58,33 @@ export const checkSessionController = async (req, res) =>{
         message: 'Session succssesfully found!',
         data: {
             ...session
+        }
+    })
+}
+
+
+export const generateAuthUrlController = (req, res) =>{
+    const url = generateAuthUrl();
+    res.json({
+        status: 200,
+        message: 'Successfully generate oauth url',
+        data: {
+            url: url
+        }
+    })
+}
+
+
+
+export const loginWithGoogleController = async (req, res) =>{
+    const session = await loginWithGoogle(req.body.code);
+
+    res.json({
+        status: 200,
+        message: 'Successfully logged in via Google OAuth!',
+        data: {
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken
         }
     })
 }
