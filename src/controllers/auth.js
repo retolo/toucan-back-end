@@ -84,7 +84,7 @@ export const loginWithGoogleController = async (req, res) =>{
         expires: new Date(Date.now() + FIFTEEN_MINUTES)
     })
 
-    res.cookies('refreshToken', session.refreshToken, {
+    res.cookie('refreshToken', session.refreshToken, {
         httpOnly: true,
         expires: new Date(Date.now() + THIRTY_DAYS)
     })
