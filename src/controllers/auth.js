@@ -1,5 +1,5 @@
 import { registerUser, loginUser, logout, checkSession, loginWithGoogle} from "../services/auth.js";
-import { THIRTY_DAYS } from "../constants/index.js";
+import { THIRTY_DAYS,FIFTEEN_MINUTES} from "../constants/index.js";
 import { generateAuthUrl } from "../utils/googleOAuth2.js";
 
 export const registerUserController = async (req, res) =>{
@@ -20,7 +20,7 @@ export const loginUserController = async (req, res) =>{
 
     res.cookie('accessToken', session.accessToken, {
         httpOnly: true,
-        expires: new Date(Date.now() + THIRTY_DAYS)
+        expires: new Date(Date.now() + FIFTEEN_MINUTES)
     })
 
     res.cookie('refreshToken', session.refreshToken, {
@@ -78,6 +78,16 @@ export const generateAuthUrlController = (req, res) =>{
 
 export const loginWithGoogleController = async (req, res) =>{
     const session = await loginWithGoogle(req.body.code);
+
+    res.cookie('accessToken', session.accessToken, {
+        httpOnly: true,
+        expires: new Date(Date.now() + FIFTEEN_MINUTES)
+    })
+
+    res.cookies('refreshToken', session.refreshToken, {
+        httpOnly: true,
+        expires: new Date(Date.now() + THIRTY_DAYS)
+    })
 
     res.json({
         status: 200,
